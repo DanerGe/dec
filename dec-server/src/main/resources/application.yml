@@ -1,0 +1,24 @@
+server:
+  port: 8001
+
+eureka:
+  instance:
+    hostname: 127.0.0.1
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+dec-name: 8001--服务注册中心--平台
+spring:
+  mvc:
+    view:
+      prefix: classpath:/templates
+      suffix: .html
+
+
+#logging:
+#  level:
+#    dec.demo: debug
+

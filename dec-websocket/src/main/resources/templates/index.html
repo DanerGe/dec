@@ -2,9 +2,110 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <title>蛋儿哥的匿名好友们</title>
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
-<body>
-$END$
+<body style="position: absolute; width: 100%;">
+    <img src="">
+    <div class="row">
+        <label class="col-lg-3"> </label>
+        <div id="message" style="height: 500px; overflow:scroll;" class="col-lg-6"></div>
+        <!--<div id="message" style=" border: red solid; " class="col-lg-6 pre-scrollable"></div>-->
+    </div>
+    <div class="row" style="position: relative;top:1rem; ">
+        <label class="col-lg-3" style=""></label>
+        <div style="margin: 20px auto;" CLASS="col-lg-6">
+            <input id="text" type="text" class="form-control " placeholder="在此输入发送内容"/><BR/>
+            <div class="row">
+                <label class="col-lg-4"> </label>
+                <div class="col-lg-6">
+                    <button onclick="send()" class="btn btn-info">发送</button>
+                    <button onclick="closeWebSocket()" class="btn btn-danger">关闭连接</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+
+<script type="text/javascript">
+    $(document).ready(function(e) {
+        $(this).keydown(function (e){
+            if(e.which == "13"){
+                send();//触发该事件
+            }
+        })
+    });
+
+    var websocket = null;
+
+    //判断当前浏览器是否支持WebSocket
+    if('WebSocket' in window){
+        websocket = new WebSocket("ws://xhufeb.natappfree.cc/websocket");
+    }
+    else{
+        alert('Not support websocket')
+    }
+
+    //连接发生错误的回调方法
+    websocket.onerror = function(){
+        setMessageInnerHTML("error");
+    };
+
+    //连接成功建立的回调方法
+    websocket.onopen = function(event){
+        setMessageInnerHTML("开始聊天吧");
+    }
+
+    //接收到消息的回调方法
+    websocket.onmessage = function(event){
+        setMessageInnerHTML(event.data);
+    }
+
+    //连接关闭的回调方法
+    websocket.onclose = function(){
+        setMessageInnerHTML("close");
+    }
+
+    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+    window.onbeforeunload = function(){
+        websocket.close();
+    }
+
+    //将消息显示在网页上
+    function setMessageInnerHTML(innerHTML){
+
+        document.getElementById('message').innerHTML = innerHTML + '<hr/>'+ document.getElementById('message').innerHTML;
+    }
+
+    //关闭连接
+    function closeWebSocket(){
+        websocket.close();
+    }
+
+    //发送消息
+    function send(){
+        var textDom = document.getElementById('text');
+        var message = textDom.value;
+        $("#text").val("");
+        websocket.send(message);
+    }
+</script>
+
+<style>
+    body{
+        background: no-repeat;
+        background-color: black;
+        /*星空图*/
+        background-image: url("http://attach.bbs.miui.com/album/201605/09/155052ru0wm064s8jh0mju.jpg");
+        /*松鼠*/
+        /*background-image: url("http://img4.imgtn.bdimg.com/it/u=1197267438,2247440044&fm=27&gp=0.jpg");*/
+        background-size: 100%;
+        color: #ffffff;
+    }
+</style>
 </html>

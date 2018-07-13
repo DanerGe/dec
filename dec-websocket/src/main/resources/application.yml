@@ -1,0 +1,4 @@
+server:
+  port: 8002
+
+dec-name: 8002-websocket-Cloud
